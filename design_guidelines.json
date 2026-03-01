@@ -1,0 +1,143 @@
+{
+  "brand_identity": {
+    "name": "MicroSkill",
+    "ethos": "Learn genius skills in 5 minutes. Optimistic, futuristic, clear.",
+    "aesthetic": "Frutiger Aero (2025 Modern Revival)",
+    "tone": "Intellectual, Refreshing, Encouraging"
+  },
+  "typography": {
+    "font_family": {
+      "heading": "Outfit, sans-serif",
+      "body": "Plus Jakarta Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-7xl font-bold tracking-tight",
+      "h2": "text-4xl md:text-5xl font-semibold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-semibold",
+      "body_lg": "text-lg md:text-xl leading-relaxed",
+      "body_base": "text-base leading-relaxed text-slate-600"
+    },
+    "weights": {
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#0EA5E9",
+        "foreground": "#FFFFFF",
+        "50": "#F0F9FF",
+        "100": "#E0F2FE",
+        "500": "#0EA5E9",
+        "600": "#0284C7"
+      },
+      "secondary": {
+        "DEFAULT": "#84CC16",
+        "foreground": "#FFFFFF",
+        "50": "#F7FEE7",
+        "500": "#84CC16"
+      },
+      "accent": {
+        "DEFAULT": "#F472B6",
+        "foreground": "#FFFFFF"
+      },
+      "background": {
+        "start": "#F0F9FF",
+        "end": "#E0F2FE",
+        "glass": "rgba(255, 255, 255, 0.65)"
+      },
+      "text": {
+        "primary": "#0F172A",
+        "secondary": "#475569",
+        "muted": "#94A3B8"
+      }
+    },
+    "gradients": {
+      "hero": "bg-gradient-to-b from-sky-100 to-white",
+      "glass_surface": "bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl",
+      "glossy_button": "bg-gradient-to-b from-sky-400 to-sky-500 hover:from-sky-300 hover:to-sky-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
+    }
+  },
+  "layout": {
+    "grid_system": "Use 'Bento' style grids. Mix wide and tall cards.",
+    "spacing": {
+      "container_padding": "p-6 md:p-12",
+      "section_gap": "gap-8 md:gap-12",
+      "internal_padding": "p-6"
+    },
+    "radius": {
+      "default": "rounded-2xl",
+      "large": "rounded-3xl",
+      "pill": "rounded-full"
+    }
+  },
+  "components": {
+    "cards": {
+      "style": "Glassmorphism",
+      "classes": "bg-white/70 backdrop-blur-lg border border-white/50 shadow-lg rounded-3xl hover:-translate-y-1 transition-all duration-300"
+    },
+    "buttons": {
+      "primary": "rounded-full px-8 py-3 font-semibold text-white bg-gradient-to-b from-sky-400 to-sky-600 shadow-lg shadow-sky-200 hover:shadow-sky-300 transition-all active:scale-95 border-t border-white/30",
+      "secondary": "rounded-full px-8 py-3 font-semibold text-slate-700 bg-white/80 hover:bg-white border border-white/60 shadow-sm backdrop-blur-md transition-all",
+      "ghost": "rounded-full px-6 py-2 font-medium text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-colors"
+    },
+    "inputs": {
+      "style": "Glass field",
+      "classes": "bg-white/50 backdrop-blur-sm border border-slate-200 focus:border-sky-400 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-sky-100 transition-all placeholder:text-slate-400"
+    },
+    "navigation": {
+      "style": "Floating Pill",
+      "classes": "fixed top-6 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl border border-white/40 shadow-2xl rounded-full px-6 py-3 z-50 flex items-center gap-6"
+    }
+  },
+  "visual_enhancers": {
+    "glass_effect": "backdrop-filter: blur(16px); background: rgba(255, 255, 255, 0.6);",
+    "shadows": "shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+    "decorations": [
+      "Floating bubbles (absolute positioned div with rounded-full, gradient bg, blur)",
+      "Lens flares (white radial gradients)",
+      "Water ripples"
+    ]
+  },
+  "motion": {
+    "library": "framer-motion",
+    "animations": {
+      "hover": "whileHover={{ y: -5 }}",
+      "tap": "whileTap={{ scale: 0.95 }}",
+      "float": "animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}",
+      "fade_in": "initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}"
+    }
+  },
+  "image_urls": {
+    "backgrounds": [
+      "https://images.unsplash.com/photo-1609129465734-dd1ea8b46e11?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNDR8MHwxfHNlYXJjaHwzfHxibHVlJTIwc2t5JTIwd2hpdGUlMjBjbG9zc3klMjBiYWNrZ3JvdW5kJTIwd2F0ZXIlMjBkcm9wbGV0cyUyMG1hY3JvJTIwZ3JlZW4lMjBncmFzcyUyMGZpZWxkJTIwZnV0dXJpc3RpYyUyMGJyaWdodCUyMGNpdHklMjBoYXBweSUyMHBlcnNvbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc3MjM2NjYzMnww&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1600333087329-a1e3bcb80d29?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNDR8MHwxfHNlYXJjaHw0fHxibHVlJTIwc2t5JTIwd2hpdGUlMjBjbG9zc3klMjBiYWNrZ3JvdW5kJTIwd2F0ZXIlMjBkcm9wbGV0cyUyMG1hY3JvJTIwZ3JlZW4lMjBncmFzcyUyMGZpZWxkJTIwZnV0dXJpc3RpYyUyMGJyaWdodCUyMGNpdHklMjBoYXBweSUyMHBlcnNvbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc3MjM2NjYzMnww&ixlib=rb-4.1.0&q=85"
+    ],
+    "hero": "https://images.unsplash.com/photo-1755790140495-0798122fb7b6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwxfHxmcnV0aWdlciUyMGFlcm8lMjBhZXN0aGV0aWMlMjBnbG9zc3klMjBidWJibGVzJTIwYmx1ZSUyMHNreSUyMGdyZWVuJTIwZ3Jhc3N8ZW58MHx8fHwxNzcyMzY2NjIzfDA&ixlib=rb-4.1.0&q=85",
+    "avatars": [
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Install fonts: 'Outfit' and 'Plus Jakarta Sans' from Google Fonts immediately.",
+    "Install 'framer-motion' for the floating bubble effects.",
+    "Use the Glassmorphism card style for ALL content containers (lessons, categories).",
+    "Set the global background to a subtle gradient (Sky Blue to White).",
+    "Do NOT use flat colors. Always use gradients or glass overlays.",
+    "For the Hero section, use the provided cloud/sky background with a heavy blur or overlay.",
+    "Categories should be colorful glossy cards (Green for Finance, Blue for Tech, Pink for Psych).",
+    "The progress bar should be a glossy 'liquid' bar (rounded-full, gradient fill, inner shadow)."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Avoid generic 'SaaS Blue' flat design. This must look like 2025 Frutiger Aero.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Every interaction needs micro-animations - hover states, transitions.",
+    "Use 'sonner' for toasts.",
+    "All interactive elements MUST include data-testid attribute."
+  ]
+}
