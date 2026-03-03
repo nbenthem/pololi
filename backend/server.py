@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 import requests
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+import gamification as gamif
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -44,6 +45,11 @@ class Category(BaseModel):
     icon: str
     slug: str
 
+class QuizQuestion(BaseModel):
+    question: str
+    options: List[str]
+    correct_answer: int  # Index of correct option (0-based)
+
 class Lesson(BaseModel):
     model_config = ConfigDict(extra="ignore")
     lesson_id: str
@@ -52,7 +58,31 @@ class Lesson(BaseModel):
     category_id: str
     content: dict
     duration: int = 5
+    image_url: Optional[str] = None
+    insights: Optional[List[str]] = []
+    quiz: Optional[List[QuizQuestion]] = []
+    author_id: Optional[str] = None  # User who created it (None = platform)
     created_at: datetime
+
+class Badge(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    badge_id: str
+    name: str
+    description: str
+    icon: str
+    points_required: int
+
+class UserGamification(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    user_id: str
+    points: int = 0
+    level: int = 1
+    badges: List[str] = []  # List of badge_ids
+    current_streak: int = 0
+    longest_streak: int = 0
+    last_activity_date: Optional[str] = None
+    lessons_created: int = 0
+    lessons_completed: int = 0
 
 class UserProgress(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -73,6 +103,17 @@ class SessionCreate(BaseModel):
 class GenerateLessonRequest(BaseModel):
     topic: str
     category_id: str
+
+class CreateLessonRequest(BaseModel):
+    title: str
+    description: str
+    category_id: str
+    key_points: List[str]
+    practical_examples: List[str]
+    conclusion: str
+    insights: List[str]
+    quiz_questions: List[QuizQuestion]
+    image_url: Optional[str] = None
 
 class ProgressUpdate(BaseModel):
     completed: bool
@@ -294,6 +335,8 @@ async def update_progress(lesson_id: str, data: ProgressUpdate, user: User = Dep
         "lesson_id": lesson_id
     })
     
+    was_completed_before = existing and existing.get("completed", False)
+    
     if existing:
         update_data = {"completed": data.completed}
         if data.completed:
@@ -313,6 +356,18 @@ async def update_progress(lesson_id: str, data: ProgressUpdate, user: User = Dep
             "completed_at": datetime.now(timezone.utc).isoformat() if data.completed else None
         }
         await db.user_progress.insert_one(progress_doc)
+    
+    # Gamification: Award points if completing for first time
+    if data.completed and not was_completed_before:
+        await gamif.increment_lessons_completed(db, user.user_id)
+        result = await gamif.add_points(db, user.user_id, gamif.POINTS["complete_lesson"], "complete_lesson")
+        
+        # If this lesson was created by another user, give them points
+        lesson = await db.lessons.find_one({"lesson_id": lesson_id}, {"_id": 0})
+        if lesson and lesson.get("author_id") and lesson["author_id"] != user.user_id:
+            await gamif.add_points(db, lesson["author_id"], gamif.POINTS["lesson_completed_by_other"], "other_completed")
+        
+        return {"message": "Progress updated", "gamification": result}
     
     return {"message": "Progress updated"}
 
@@ -421,6 +476,85 @@ async def get_recommendations(user: User = Depends(get_current_user)):
             lesson['created_at'] = datetime.fromisoformat(lesson['created_at'])
     
     return recommendations[:6]  # Return top 6 recommendations
+
+
+# User-created lessons
+@api_router.post("/lessons/create", response_model=Lesson)
+async def create_user_lesson(data: CreateLessonRequest, user: User = Depends(get_current_user)):
+    """Allow users to create their own lessons"""
+    lesson_id = f"lesson_{uuid.uuid4().hex[:12]}"
+    
+    # Build content structure
+    content = {
+        "title": data.title,
+        "description": data.description,
+        "key_points": data.key_points,
+        "practical_examples": data.practical_examples,
+        "conclusion": data.conclusion
+    }
+    
+    lesson_doc = {
+        "lesson_id": lesson_id,
+        "title": data.title,
+        "description": data.description,
+        "category_id": data.category_id,
+        "content": content,
+        "insights": data.insights,
+        "quiz": [q.model_dump() for q in data.quiz_questions],
+        "image_url": data.image_url,
+        "author_id": user.user_id,
+        "duration": 5,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.lessons.insert_one(lesson_doc)
+    
+    # Gamification: Award points for creating lesson
+    await gamif.increment_lessons_created(db, user.user_id)
+    await gamif.add_points(db, user.user_id, gamif.POINTS["create_lesson"], "create_lesson")
+    
+    lesson_doc['created_at'] = datetime.fromisoformat(lesson_doc['created_at'])
+    return Lesson(**lesson_doc)
+
+# Gamification endpoints
+@api_router.get("/gamification/me")
+async def get_my_gamification(user: User = Depends(get_current_user)):
+    """Get current user's gamification data"""
+    gamification = await gamif.get_or_create_gamification(db, user.user_id)
+    
+    # Get badge details
+    badges_data = []
+    for badge_id in gamification.get("badges", []):
+        badge_def = next((b for b in gamif.BADGES_DEFINITIONS if b["badge_id"] == badge_id), None)
+        if badge_def:
+            badges_data.append(badge_def)
+    
+    return {
+        **gamification,
+        "badges_details": badges_data,
+        "points_to_next_level": gamif.LEVELS[gamification["level"]] if gamification["level"] < len(gamif.LEVELS) else 0
+    }
+
+@api_router.get("/gamification/leaderboard")
+async def get_leaderboard(limit: int = 10):
+    """Get top users by points"""
+    leaderboard = await db.user_gamification.find(
+        {},
+        {"_id": 0}
+    ).sort("points", -1).limit(limit).to_list(limit)
+    
+    # Get user names
+    for entry in leaderboard:
+        user = await db.users.find_one({"user_id": entry["user_id"]}, {"_id": 0, "name": 1})
+        entry["name"] = user["name"] if user else "Usuario"
+    
+    return leaderboard
+
+@api_router.get("/gamification/badges")
+async def get_all_badges():
+    """Get all available badges"""
+    return gamif.BADGES_DEFINITIONS
+
 
 app.include_router(api_router)
 
