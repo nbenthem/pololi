@@ -17,6 +17,7 @@ function Dashboard({ user }) {
   const [lessons, setLessons] = useState([]);
   const [stats, setStats] = useState(null);
   const [progress, setProgress] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,17 +26,19 @@ function Dashboard({ user }) {
 
   const fetchDashboardData = async () => {
     try {
-      const [categoriesRes, lessonsRes, statsRes, progressRes] = await Promise.all([
+      const [categoriesRes, lessonsRes, statsRes, progressRes, recommendationsRes] = await Promise.all([
         axios.get(`${API_URL}/api/categories`, { withCredentials: true }),
         axios.get(`${API_URL}/api/lessons`, { withCredentials: true }),
         axios.get(`${API_URL}/api/user/stats`, { withCredentials: true }),
-        axios.get(`${API_URL}/api/progress`, { withCredentials: true })
+        axios.get(`${API_URL}/api/progress`, { withCredentials: true }),
+        axios.get(`${API_URL}/api/lessons/recommendations`, { withCredentials: true })
       ]);
       
       setCategories(categoriesRes.data);
       setLessons(lessonsRes.data);
       setStats(statsRes.data);
       setProgress(progressRes.data);
+      setRecommendations(recommendationsRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Error al cargar datos');
@@ -53,7 +56,11 @@ function Dashboard({ user }) {
       'cat_negotiation': 'from-sky-400 to-sky-600',
       'cat_psychology': 'from-pink-400 to-pink-600',
       'cat_finance': 'from-lime-400 to-lime-600',
-      'cat_science': 'from-purple-400 to-purple-600'
+      'cat_science': 'from-purple-400 to-purple-600',
+      'cat_productivity': 'from-amber-400 to-amber-600',
+      'cat_health': 'from-emerald-400 to-emerald-600',
+      'cat_creativity': 'from-violet-400 to-violet-600',
+      'cat_leadership': 'from-rose-400 to-rose-600'
     };
     return colors[categoryId] || 'from-slate-400 to-slate-600';
   };
@@ -119,6 +126,48 @@ function Dashboard({ user }) {
               value={`${stats.completion_rate}%`}
               color="from-lime-400 to-lime-600"
             />
+          </motion.div>
+        )}
+
+        {/* Recommendations - only show if user has some progress */}
+        {recommendations.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-gradient-to-br from-purple-400 to-pink-500 p-3 rounded-2xl">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-semibold">Recomendadas para ti</h2>
+                <p className="text-sm text-slate-600">Basadas en tus lecciones completadas</p>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recommendations.map((lesson, index) => (
+                <motion.div
+                  key={lesson.lesson_id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.05 * index }}
+                  className="relative"
+                >
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-br from-purple-500 to-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg z-10">
+                    ✨ Para ti
+                  </div>
+                  <LessonCard
+                    lesson={lesson}
+                    completed={isLessonCompleted(lesson.lesson_id)}
+                    categoryColor={getCategoryColor(lesson.category_id)}
+                    index={index}
+                  />
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -248,7 +297,11 @@ function getCategoryIcon(iconName) {
     'handshake': '🤝',
     'brain': '🧠',
     'dollar-sign': '💰',
-    'atom': '⚛️'
+    'atom': '⚛️',
+    'rocket': '🚀',
+    'heart': '❤️',
+    'lightbulb': '💡',
+    'users': '👥'
   };
   return icons[iconName] || '📚';
 }

@@ -75,7 +75,11 @@ function LessonDetail({ user }) {
       'cat_negotiation': 'from-sky-400 to-sky-600',
       'cat_psychology': 'from-pink-400 to-pink-600',
       'cat_finance': 'from-lime-400 to-lime-600',
-      'cat_science': 'from-purple-400 to-purple-600'
+      'cat_science': 'from-purple-400 to-purple-600',
+      'cat_productivity': 'from-amber-400 to-amber-600',
+      'cat_health': 'from-emerald-400 to-emerald-600',
+      'cat_creativity': 'from-violet-400 to-violet-600',
+      'cat_leadership': 'from-rose-400 to-rose-600'
     };
     return colors[categoryId] || 'from-slate-400 to-slate-600';
   };
