@@ -379,6 +379,56 @@ mongosh $MONGO_URL
 
 ---
 
+## 📚 Documentación Completa
+
+### Guías de Usuario y Desarrollo
+
+- **[README.md](README.md)** - Documentación principal
+- **[CHANGELOG.md](CHANGELOG.md)** - Historial de versiones y cambios
+
+### Guías de Administración
+
+- **[ADMIN_USER_GUIDE.md](docs/ADMIN_USER_GUIDE.md)** - Usuario admin y testing de gamificación
+  - Login como admin
+  - Probar sistema de puntos y badges
+  - API testing con curl
+  - Troubleshooting
+
+- **[OPERATIONS_MAINTENANCE.md](docs/OPERATIONS_MAINTENANCE.md)** - Manejo y mantenimiento
+  - Gestión de base de datos
+  - Monitoreo y salud del sistema
+  - Backups y recuperación
+  - Gestión de usuarios y moderación
+  - Performance y optimización
+  - Logs y debugging
+  - Seguridad
+  - Métricas y analytics
+  - Troubleshooting común
+  - Escalabilidad
+
+### Guías de Desarrollo
+
+- **[GITHUB_MANAGEMENT.md](docs/GITHUB_MANAGEMENT.md)** - Gestión desde GitHub
+  - Workflow de desarrollo
+  - Deployment manual y automático
+  - Añadir features y categorías
+  - Backups de código
+  - Gestión de secrets
+  - Pre-deploy checklist
+
+- **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** - Guía de pruebas
+  - Probar flujo OAuth
+  - Testing de gamificación
+  - Verificar funcionalidades
+  - Testing en diferentes dispositivos
+  - Checklist de QA
+
+### Herramientas
+
+- **[admin_login.html](admin_login.html)** - Helper para login de admin
+
+---
+
 ## 📄 Licencia
 
 MIT License - ve [LICENSE](LICENSE) para detalles
