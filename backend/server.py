@@ -248,6 +248,64 @@ async def get_lessons(category_id: Optional[str] = None, search: Optional[str] =
             lesson['created_at'] = datetime.fromisoformat(lesson['created_at'])
     return lessons
 
+# Recommendations (MUST be before /lessons/{lesson_id} to avoid path conflict)
+@api_router.get("/lessons/recommendations", response_model=List[Lesson])
+async def get_recommendations(user: User = Depends(get_current_user)):
+    """Get personalized lesson recommendations based on completed lessons and user preferences"""
+    # Get user's completed lessons
+    progress_docs = await db.user_progress.find(
+        {"user_id": user.user_id, "completed": True},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    completed_lesson_ids = [p["lesson_id"] for p in progress_docs]
+    
+    # Get completed lessons details to find favorite categories
+    if completed_lesson_ids:
+        completed_lessons = await db.lessons.find(
+            {"lesson_id": {"$in": completed_lesson_ids}},
+            {"_id": 0}
+        ).to_list(1000)
+        
+        # Count category preferences
+        from collections import Counter
+        category_counts = Counter([l["category_id"] for l in completed_lessons])
+        
+        # Get top 3 preferred categories
+        preferred_categories = [cat for cat, _ in category_counts.most_common(3)]
+    else:
+        # New user - recommend from all categories
+        preferred_categories = []
+    
+    # Build recommendation query
+    query = {"lesson_id": {"$nin": completed_lesson_ids}}  # Exclude completed
+    
+    # Get recommendations
+    recommendations = []
+    
+    # Strategy 1: From preferred categories (if user has history)
+    if preferred_categories:
+        category_recs = await db.lessons.find(
+            {**query, "category_id": {"$in": preferred_categories}},
+            {"_id": 0}
+        ).limit(4).to_list(100)
+        recommendations.extend(category_recs)
+    
+    # Strategy 2: Popular/recent lessons (diversify)
+    if len(recommendations) < 6:
+        other_recs = await db.lessons.find(
+            query,
+            {"_id": 0}
+        ).sort("created_at", -1).limit(6 - len(recommendations)).to_list(100)
+        recommendations.extend(other_recs)
+    
+    # Convert datetime strings to datetime objects
+    for lesson in recommendations:
+        if isinstance(lesson['created_at'], str):
+            lesson['created_at'] = datetime.fromisoformat(lesson['created_at'])
+    
+    return recommendations[:6]  # Return top 6 recommendations
+
 @api_router.get("/lessons/{lesson_id}", response_model=Lesson)
 async def get_lesson(lesson_id: str):
     lesson = await db.lessons.find_one({"lesson_id": lesson_id}, {"_id": 0})
@@ -418,64 +476,6 @@ async def get_user_stats(user: User = Depends(get_current_user)):
         "total_lessons": total_lessons,
         "completion_rate": round((completed / total_lessons * 100), 1) if total_lessons > 0 else 0
     }
-
-# Recommendations
-@api_router.get("/lessons/recommendations", response_model=List[Lesson])
-async def get_recommendations(user: User = Depends(get_current_user)):
-    """Get personalized lesson recommendations based on completed lessons and user preferences"""
-    # Get user's completed lessons
-    progress_docs = await db.user_progress.find(
-        {"user_id": user.user_id, "completed": True},
-        {"_id": 0}
-    ).to_list(1000)
-    
-    completed_lesson_ids = [p["lesson_id"] for p in progress_docs]
-    
-    # Get completed lessons details to find favorite categories
-    if completed_lesson_ids:
-        completed_lessons = await db.lessons.find(
-            {"lesson_id": {"$in": completed_lesson_ids}},
-            {"_id": 0}
-        ).to_list(1000)
-        
-        # Count category preferences
-        from collections import Counter
-        category_counts = Counter([l["category_id"] for l in completed_lessons])
-        
-        # Get top 3 preferred categories
-        preferred_categories = [cat for cat, _ in category_counts.most_common(3)]
-    else:
-        # New user - recommend from all categories
-        preferred_categories = []
-    
-    # Build recommendation query
-    query = {"lesson_id": {"$nin": completed_lesson_ids}}  # Exclude completed
-    
-    # Get recommendations
-    recommendations = []
-    
-    # Strategy 1: From preferred categories (if user has history)
-    if preferred_categories:
-        category_recs = await db.lessons.find(
-            {**query, "category_id": {"$in": preferred_categories}},
-            {"_id": 0}
-        ).limit(4).to_list(100)
-        recommendations.extend(category_recs)
-    
-    # Strategy 2: Popular/recent lessons (diversify)
-    if len(recommendations) < 6:
-        other_recs = await db.lessons.find(
-            query,
-            {"_id": 0}
-        ).sort("created_at", -1).limit(6 - len(recommendations)).to_list(100)
-        recommendations.extend(other_recs)
-    
-    # Convert datetime strings to datetime objects
-    for lesson in recommendations:
-        if isinstance(lesson['created_at'], str):
-            lesson['created_at'] = datetime.fromisoformat(lesson['created_at'])
-    
-    return recommendations[:6]  # Return top 6 recommendations
 
 
 # User-created lessons
