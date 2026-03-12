@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroSkill - Admin Login Helper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .steps {
+            counter-reset: step;
+            margin: 20px 0;
+        }
+        
+        .step {
+            counter-increment: step;
+            padding: 15px;
+            border-left: 3px solid #667eea;
+            margin: 15px 0;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .step:before {
+            content: counter(step);
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            background: #667eea;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Admin Login Helper</h1>
+        <p class="subtitle">Herramienta para facilitar el login del usuario administrador</p>
+        
+        <div class="info-box">
+            <h3>📋 Credenciales de Admin</h3>
+            <p><strong>Email:</strong> admin@microskill.com</p>
+            <p><strong>Puntos:</strong> 250 | <strong>Nivel:</strong> 3 | <strong>Badges:</strong> 3</p>
+            <p><strong>Racha:</strong> 5 días 🔥</p>
+        </div>
+        
+        <button class="button" onclick="loginAsAdmin()">
+            ✨ Login como Admin (Método 1)
+        </button>
+        
+        <div id="success" class="success">
+            ✅ Cookie creada! Redirigiendo al dashboard...
+        </div>
+        
+        <div style="margin-top: 40px;">
+            <h3>📝 Método Manual</h3>
+            <div class="steps">
+                <div class="step">
+                    Abre la app en: <a href="https://quick-mastery-2.preview.emergentagent.com" target="_blank">quick-mastery-2.preview.emergentagent.com</a>
+                </div>
+                <div class="step">
+                    Abre DevTools (F12) y ve a Console
+                </div>
+                <div class="step">
+                    Pega este código:
+                    <div class="code-box" id="codeBox">
+document.cookie = "session_token=admin_session_permanent_token; path=/; domain=.preview.emergentagent.com; secure; samesite=none; max-age=31536000";
+location.reload();
+                    </div>
+                    <button class="button" onclick="copyCode()" style="margin-top: 10px; font-size: 14px; padding: 10px;">
+                        📋 Copiar Código
+                    </button>
+                </div>
+                <div class="step">
+                    Recarga la página (F5)
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #ffc107;">
+            <strong>💡 Tip:</strong> Si no funciona, verifica que estás en el dominio correcto (.preview.emergentagent.com)
+        </div>
+    </div>
+    
+    <script>
+        function loginAsAdmin() {
+            try {
+                // Set cookie
+                document.cookie = "session_token=admin_session_permanent_token; path=/; domain=.preview.emergentagent.com; secure; samesite=none; max-age=31536000";
+                
+                // Show success message
+                document.getElementById('success').style.display = 'block';
+                
+                // Redirect to app
+                setTimeout(() => {
+                    window.location.href = 'https://quick-mastery-2.preview.emergentagent.com/dashboard';
+                }, 1500);
+            } catch (error) {
+                alert('Error: ' + error.message + '\n\nUsa el método manual copiando el código.');
+            }
+        }
+        
+        function copyCode() {
+            const codeBox = document.getElementById('codeBox');
+            const text = codeBox.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Código copiado al portapapeles!');
+            }).catch(err => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Código copiado al portapapeles!');
+            });
+        }
+    </script>
+</body>
+</html>
