@@ -4,7 +4,7 @@
 
 ### Flujo Completo de Usuario
 
-1. **Visita la landing page**: https://quick-mastery-2.preview.emergentagent.com
+1. **Visita la landing page**: https://quickskill-preview.preview.emergentagent.com
 
 2. **Haz clic en "Comenzar ahora"** o "Empieza gratis con Google"
    - Serás redirigido a `auth.emergentagent.com`
@@ -104,7 +104,7 @@
 # DevTools > Application > Cookies > session_token
 
 # 2. Genera una nueva lección
-curl -X POST "https://quick-mastery-2.preview.emergentagent.com/api/lessons/generate" \
+curl -X POST "https://quickskill-preview.preview.emergentagent.com/api/lessons/generate" \
   -H "Content-Type: application/json" \
   -H "Cookie: session_token=TU_SESSION_TOKEN" \
   -d '{
@@ -120,7 +120,7 @@ curl -X POST "https://quick-mastery-2.preview.emergentagent.com/api/lessons/gene
 
 ```bash
 # Listar todas las lecciones (debería haber 17 ahora)
-curl -s "https://quick-mastery-2.preview.emergentagent.com/api/lessons" | python3 -c "import sys,json; print(f'Total: {len(json.load(sys.stdin))} lecciones')"
+curl -s "https://quickskill-preview.preview.emergentagent.com/api/lessons" | python3 -c "import sys,json; print(f'Total: {len(json.load(sys.stdin))} lecciones')"
 
 # En el navegador: ve a Explorar > debería aparecer la nueva lección
 ```
@@ -179,7 +179,7 @@ curl -s "https://quick-mastery-2.preview.emergentagent.com/api/lessons" | python
 
 ```bash
 # Landing page
-curl -w "@-" -o /dev/null -s "https://quick-mastery-2.preview.emergentagent.com" <<'EOF'
+curl -w "@-" -o /dev/null -s "https://quickskill-preview.preview.emergentagent.com" <<'EOF'
     time_namelookup:  %{time_namelookup}s\n
     time_connect:  %{time_connect}s\n
     time_starttransfer:  %{time_starttransfer}s\n
@@ -187,7 +187,7 @@ curl -w "@-" -o /dev/null -s "https://quick-mastery-2.preview.emergentagent.com"
 EOF
 
 # API response time
-time curl -s "https://quick-mastery-2.preview.emergentagent.com/api/lessons" > /dev/null
+time curl -s "https://quickskill-preview.preview.emergentagent.com/api/lessons" > /dev/null
 ```
 
 **Benchmarks esperados**:
@@ -269,7 +269,7 @@ grep CORS_ORIGINS /app/backend/.env
 ```python
 # Verificar que endpoint funciona
 curl -H "Cookie: session_token=TU_TOKEN" \
-  https://quick-mastery-2.preview.emergentagent.com/api/lessons/recommendations
+  https://quickskill-preview.preview.emergentagent.com/api/lessons/recommendations
 
 # Completar al menos 1 lección para activar recomendaciones
 ```

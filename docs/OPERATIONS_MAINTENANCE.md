@@ -194,7 +194,7 @@ mongosh --eval "db.stats()" $MONGO_URL
 cat > /app/scripts/health_check.sh << 'EOF'
 #!/bin/bash
 
-API_URL="https://quick-mastery-2.preview.emergentagent.com"
+API_URL="https://quickskill-preview.preview.emergentagent.com"
 
 # Check backend
 BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $API_URL/api/categories)
@@ -504,7 +504,7 @@ logging.basicConfig(level=logging.DEBUG)
 uvicorn server:app --log-level debug
 
 # Test endpoint específico con verboso
-curl -v https://quick-mastery-2.preview.emergentagent.com/api/lessons
+curl -v https://quickskill-preview.preview.emergentagent.com/api/lessons
 ```
 
 ---
@@ -536,7 +536,7 @@ python /app/scripts/migrate_db.py
 sudo supervisorctl restart backend frontend
 
 # 7. Verificar que funciona
-curl https://quick-mastery-2.preview.emergentagent.com/api/categories
+curl https://quickskill-preview.preview.emergentagent.com/api/categories
 ```
 
 ### 🔄 Rollback
@@ -778,7 +778,7 @@ cat /app/frontend/.env
 grep CORS_ORIGINS /app/backend/.env
 
 # Verificar que backend acepta cookies
-curl -v https://quick-mastery-2.preview.emergentagent.com/api/auth/me \
+curl -v https://quickskill-preview.preview.emergentagent.com/api/auth/me \
   -H "Cookie: session_token=TEST"
 ```
 

@@ -25,7 +25,7 @@
 
 ### Opción A: Usando DevTools del Navegador
 
-1. **Abre la app:** https://quick-mastery-2.preview.emergentagent.com
+1. **Abre la app:** https://quickskill-preview.preview.emergentagent.com
 
 2. **Abre DevTools (F12)** y ve a la pestaña **Console**
 
@@ -48,7 +48,7 @@ console.log("✓ Session cookie creada!");
 
 1. **Instala extensión:** [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg) (Chrome)
 
-2. **Ve a:** https://quick-mastery-2.preview.emergentagent.com
+2. **Ve a:** https://quickskill-preview.preview.emergentagent.com
 
 3. **Abre EditThisCookie** (icono en barra de herramientas)
 
@@ -70,7 +70,7 @@ console.log("✓ Session cookie creada!");
 ### Ver datos de gamificación
 
 ```bash
-API_URL="https://quick-mastery-2.preview.emergentagent.com"
+API_URL="https://quickskill-preview.preview.emergentagent.com"
 
 # Tu gamificación
 curl -X GET "$API_URL/api/gamification/me" \
@@ -239,7 +239,7 @@ Si la cookie se borra al recargar:
 
 ```javascript
 // Usa este código más explícito
-fetch('https://quick-mastery-2.preview.emergentagent.com/api/auth/me', {
+fetch('https://quickskill-preview.preview.emergentagent.com/api/auth/me', {
   credentials: 'include',
   headers: {
     'Cookie': 'session_token=admin_session_permanent_token'

@@ -7,7 +7,7 @@ from pymongo import MongoClient
 import uuid
 
 # Configuration
-API_URL = "https://quick-mastery-2.preview.emergentagent.com"
+API_URL = "https://quickskill-preview.preview.emergentagent.com"
 MONGO_URL = "mongodb://localhost:27017"
 DB_NAME = "test_database"
 

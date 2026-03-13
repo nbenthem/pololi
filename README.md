@@ -6,7 +6,7 @@
 
 **Plataforma de micro-aprendizaje con contenido generado por IA y diseño Frutiger Aero**
 
-[Demo en vivo](https://quick-mastery-2.preview.emergentagent.com) | [Características](#características) | [Instalación](#instalación) | [Uso](#uso)
+[Demo en vivo](https://quickskill-preview.preview.emergentagent.com) | [Características](#características) | [Instalación](#instalación) | [Uso](#uso)
 
 </div>
 
