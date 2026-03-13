@@ -8,11 +8,13 @@ import {
   Clock, Flame, Target, PenLine, Compass, Award
 } from 'lucide-react';
 import NavBar from '../components/NavBar';
+import { useSettings } from '../contexts/SettingsContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 function Dashboard({ user }) {
   const navigate = useNavigate();
+  const { t } = useSettings();
   const [stats, setStats] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [recentLessons, setRecentLessons] = useState([]);
@@ -79,19 +81,19 @@ function Dashboard({ user }) {
         {/* Welcome Section */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2">
-            Hola, {user?.name?.split(' ')[0] || 'Aprendiz'}!
+            {t('dash_hello')}, {user?.name?.split(' ')[0] || 'Aprendiz'}!
           </h1>
-          <p className="text-base text-slate-600">
-            Que quieres aprender hoy en 5 minutos?
+          <p className="text-base text-slate-600 dark:text-slate-400">
+            {t('dash_subtitle')}
           </p>
         </motion.div>
 
         {/* Quick Stats + Streak */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-          <QuickStat icon={<BookOpen className="w-5 h-5" />} value={stats?.completed_lessons || 0} label="Completadas" gradient="from-sky-400 to-sky-600" />
-          <QuickStat icon={<Star className="w-5 h-5" />} value={stats?.favorites_count || 0} label="Favoritos" gradient="from-pink-400 to-pink-600" />
-          <QuickStat icon={<TrendingUp className="w-5 h-5" />} value={`${stats?.completion_rate || 0}%`} label="Progreso" gradient="from-lime-400 to-lime-600" />
-          <QuickStat icon={<Flame className="w-5 h-5" />} value={gamification?.current_streak || 0} label="Dias de racha" gradient="from-orange-400 to-red-500" />
+          <QuickStat icon={<BookOpen className="w-5 h-5" />} value={stats?.completed_lessons || 0} label={t('dash_completed')} gradient="from-sky-400 to-sky-600" />
+          <QuickStat icon={<Star className="w-5 h-5" />} value={stats?.favorites_count || 0} label={t('dash_favorites')} gradient="from-pink-400 to-pink-600" />
+          <QuickStat icon={<TrendingUp className="w-5 h-5" />} value={`${stats?.completion_rate || 0}%`} label={t('dash_progress')} gradient="from-lime-400 to-lime-600" />
+          <QuickStat icon={<Flame className="w-5 h-5" />} value={gamification?.current_streak || 0} label={t('dash_streak')} gradient="from-orange-400 to-red-500" />
         </motion.div>
 
         {/* Gamification Summary */}
@@ -104,8 +106,8 @@ function Dashboard({ user }) {
                 {gamification.level}
               </div>
               <div>
-                <p className="text-sm font-bold">Nivel {gamification.level}</p>
-                <p className="text-xs text-slate-500">{gamification.points} puntos</p>
+                <p className="text-sm font-bold">{t('dash_level')} {gamification.level}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{gamification.points} {t('dash_points')}</p>
               </div>
             </div>
             {gamification.badges && gamification.badges.length > 0 && (
@@ -117,7 +119,7 @@ function Dashboard({ user }) {
               </div>
             )}
             <button onClick={() => navigate('/profile')} className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1" data-testid="view-profile-btn">
-              Ver perfil <ChevronRight className="w-4 h-4" />
+              {t('dash_view_profile')} <ChevronRight className="w-4 h-4" />
             </button>
           </motion.div>
         )}
@@ -130,8 +132,8 @@ function Dashboard({ user }) {
             className="glass-card p-5 text-left hover:-translate-y-1 transition-all group"
           >
             <Compass className="w-8 h-8 text-sky-500 mb-3 group-hover:scale-110 transition-transform" />
-            <p className="font-bold text-sm">Explorar</p>
-            <p className="text-xs text-slate-500">Descubre nuevas lecciones</p>
+            <p className="font-bold text-sm">{t('dash_explore')}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('dash_discover')}</p>
           </button>
           <button
             onClick={() => navigate('/create-lesson')}
@@ -139,8 +141,8 @@ function Dashboard({ user }) {
             className="glass-card p-5 text-left hover:-translate-y-1 transition-all group"
           >
             <PenLine className="w-8 h-8 text-violet-500 mb-3 group-hover:scale-110 transition-transform" />
-            <p className="font-bold text-sm">Crear leccion</p>
-            <p className="text-xs text-slate-500">Comparte tu conocimiento</p>
+            <p className="font-bold text-sm">{t('dash_create_lesson')}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('dash_share_knowledge')}</p>
           </button>
         </motion.div>
 
@@ -152,8 +154,8 @@ function Dashboard({ user }) {
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-xl font-bold">Recomendadas para ti</h2>
-                <p className="text-xs text-slate-500">Basadas en tu historial</p>
+                <h2 className="text-lg sm:text-xl font-bold">{t('dash_recommended')}</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('dash_based_history')}</p>
               </div>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -161,7 +163,7 @@ function Dashboard({ user }) {
                 <div key={lesson.lesson_id} className="relative">
                   {index < 3 && (
                     <div className="absolute -top-2 -right-2 bg-gradient-to-br from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-lg z-10">
-                      Para ti
+                      {t('dash_for_you')}
                     </div>
                   )}
                   <LessonCard lesson={lesson} completed={isLessonCompleted(lesson.lesson_id)} categoryColor={getCategoryColor(lesson.category_id)} index={index} />
@@ -179,10 +181,10 @@ function Dashboard({ user }) {
                 <div className="bg-gradient-to-br from-sky-400 to-blue-500 p-2.5 rounded-2xl">
                   <Target className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-lg sm:text-xl font-bold">Pendientes</h2>
+                <h2 className="text-lg sm:text-xl font-bold">{t('dash_pending')}</h2>
               </div>
               <button onClick={() => navigate('/explore')} className="text-sm text-sky-600 hover:text-sky-700 font-medium flex items-center gap-1" data-testid="explore-all-lessons-btn">
-                Ver todas <ChevronRight className="w-4 h-4" />
+                {t('dash_view_all')} <ChevronRight className="w-4 h-4" />
               </button>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

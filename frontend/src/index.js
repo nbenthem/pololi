@@ -4,13 +4,16 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from './components/ui/sonner';
+import { SettingsProvider } from './contexts/SettingsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
-      <Toaster position="top-center" />
+      <SettingsProvider>
+        <App />
+        <Toaster position="top-center" />
+      </SettingsProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

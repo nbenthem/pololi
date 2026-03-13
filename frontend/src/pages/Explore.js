@@ -5,11 +5,13 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { Search, Clock, Filter, BookOpen, Grid3X3, List, Brain } from 'lucide-react';
 import NavBar from '../components/NavBar';
+import { useSettings } from '../contexts/SettingsContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 function Explore({ user }) {
   const navigate = useNavigate();
+  const { t } = useSettings();
   const [searchParams] = useSearchParams();
   const [categories, setCategories] = useState([]);
   const [lessons, setLessons] = useState([]);
@@ -84,9 +86,9 @@ function Explore({ user }) {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 flex items-center gap-3">
             <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-sky-500" />
-            Biblioteca
+            {t('explore_library')}
           </h1>
-          <p className="text-base text-slate-600">Todas las micro-lecciones disponibles</p>
+          <p className="text-base text-slate-600 dark:text-slate-400">{t('explore_all_lessons')}</p>
         </motion.div>
 
         {/* Search + View Toggle */}
@@ -95,7 +97,7 @@ function Explore({ user }) {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar lecciones..."
+              placeholder={t('explore_search')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               data-testid="search-input"

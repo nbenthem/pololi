@@ -27,6 +27,28 @@
     --ring: 199 89% 48%;
     --radius: 1rem;
   }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 92%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 92%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 92%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 74 61% 44%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 223 47% 14%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 330 81% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 47% 18%;
+    --input: 223 47% 18%;
+    --ring: 199 89% 48%;
+  }
 }
 
 @layer base {
@@ -34,8 +56,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-gradient-to-b from-sky-100 to-white text-foreground font-["Plus_Jakarta_Sans",sans-serif];
+    @apply text-foreground font-["Plus_Jakarta_Sans",sans-serif];
     min-height: 100vh;
+    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .dark body,
+  html.dark body {
+    background: linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(222 47% 6%) 100%);
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-["Outfit",sans-serif];
@@ -46,14 +74,50 @@
 .glass-card {
   @apply bg-white/70 backdrop-blur-lg border border-white/50 shadow-lg rounded-3xl;
 }
+.dark .glass-card {
+  @apply bg-white/[0.06] border-white/[0.08] shadow-xl;
+}
 
 .glass-input {
   @apply bg-white/50 backdrop-blur-sm border border-slate-200 focus:border-sky-400 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-sky-100 transition-all placeholder:text-slate-400;
+}
+.dark .glass-input {
+  @apply bg-white/[0.06] border-white/[0.1] text-slate-200 placeholder:text-slate-500 focus:border-sky-500 focus:ring-sky-900/30;
 }
 
 .glossy-button {
   @apply rounded-full px-8 py-3 font-semibold text-white bg-gradient-to-b from-sky-400 to-sky-600 shadow-lg shadow-sky-200 hover:shadow-sky-300 transition-all active:scale-95 border-t border-white/30;
 }
+.dark .glossy-button {
+  @apply shadow-sky-900/30 hover:shadow-sky-800/40;
+}
+
+/* Dark mode text overrides */
+.dark .text-slate-600 { color: rgb(148 163 184); }
+.dark .text-slate-700 { color: rgb(148 163 184); }
+.dark .text-slate-800 { color: rgb(203 213 225); }
+.dark .text-slate-500 { color: rgb(100 116 139); }
+.dark .text-slate-400 { color: rgb(100 116 139); }
+
+/* Dark mode backgrounds */
+.dark .bg-white\/60 { background-color: rgba(255,255,255,0.04); }
+.dark .bg-white\/50 { background-color: rgba(255,255,255,0.04); }
+.dark .bg-white\/80 { background-color: rgba(15,23,42,0.85); }
+.dark .bg-white\/70 { background-color: rgba(255,255,255,0.04); }
+.dark .border-slate-200 { border-color: rgba(255,255,255,0.08); }
+.dark .border-white\/40 { border-color: rgba(255,255,255,0.06); }
+
+/* Dark mode for specific colored backgrounds */
+.dark .bg-sky-50 { background-color: rgba(14,165,233,0.1); }
+.dark .bg-sky-100 { background-color: rgba(14,165,233,0.15); }
+.dark .bg-pink-100 { background-color: rgba(236,72,153,0.15); }
+.dark .bg-lime-100 { background-color: rgba(132,204,22,0.15); }
+.dark .bg-violet-50 { background-color: rgba(139,92,246,0.1); }
+.dark .bg-violet-100 { background-color: rgba(139,92,246,0.15); }
+.dark .bg-amber-50 { background-color: rgba(245,158,11,0.08); }
+.dark .bg-amber-50\/80 { background-color: rgba(245,158,11,0.08); }
+.dark .bg-red-50 { background-color: rgba(239,68,68,0.1); }
+.dark .bg-slate-100 { background-color: rgba(255,255,255,0.05); }
 
 /* Floating bubbles animation */
 @keyframes float {
@@ -74,3 +138,8 @@
 .transition-smooth {
   @apply transition-all duration-300 ease-out;
 }
+
+/* Dark mode floating bubbles */
+.dark .bg-sky-200\/30 { background-color: rgba(14,165,233,0.08); }
+.dark .bg-lime-200\/20 { background-color: rgba(132,204,22,0.05); }
+.dark .bg-pink-200\/20 { background-color: rgba(236,72,153,0.05); }
