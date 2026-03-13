@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import LessonDetail from './pages/LessonDetail';
 import Profile from './pages/Profile';
 import Explore from './pages/Explore';
+import CreateLesson from './pages/CreateLesson';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function AppRouter() {
@@ -40,6 +41,11 @@ function AppRouter() {
       <Route path="/profile" element={
         <ProtectedRoute>
           <Profile />
+        </ProtectedRoute>
+      } />
+      <Route path="/create-lesson" element={
+        <ProtectedRoute>
+          <CreateLesson />
         </ProtectedRoute>
       } />
       <Route path="*" element={<Navigate to="/" replace />} />

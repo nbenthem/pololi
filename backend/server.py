@@ -54,6 +54,11 @@ class QuizQuestion(BaseModel):
     options: List[str]
     correct_answer: int  # Index of correct option (0-based)
 
+class LessonResource(BaseModel):
+    title: str
+    url: str
+    description: Optional[str] = ""
+
 class Lesson(BaseModel):
     model_config = ConfigDict(extra="ignore")
     lesson_id: str
@@ -65,6 +70,7 @@ class Lesson(BaseModel):
     image_url: Optional[str] = None
     insights: Optional[List[str]] = []
     quiz: Optional[List[QuizQuestion]] = []
+    resources: Optional[List[LessonResource]] = []
     author_id: Optional[str] = None  # User who created it (None = platform)
     created_at: datetime
 
@@ -126,10 +132,17 @@ class CreateLessonRequest(BaseModel):
     conclusion: str
     insights: List[str]
     quiz_questions: List[QuizQuestion]
+    resources: Optional[List[LessonResource]] = []
     image_url: Optional[str] = None
 
 class ProgressUpdate(BaseModel):
     completed: bool
+
+class UserSettingsUpdate(BaseModel):
+    theme: Optional[str] = None  # "light" or "dark"
+    language: Optional[str] = None  # "es" or "en"
+    show_badge: Optional[bool] = None
+    social_links: Optional[dict] = None  # {twitter, linkedin, github, instagram, website}
 
 # Auth helper
 async def get_current_user(session_token: Optional[str] = Cookie(None), authorization: Optional[str] = Header(None)) -> User:
@@ -594,6 +607,38 @@ async def get_user_stats(user: User = Depends(get_current_user)):
         "completion_rate": round((completed / total_lessons * 100), 1) if total_lessons > 0 else 0
     }
 
+# User Settings
+@api_router.get("/user/settings")
+async def get_user_settings(user: User = Depends(get_current_user)):
+    settings = await db.user_settings.find_one({"user_id": user.user_id}, {"_id": 0})
+    if not settings:
+        settings = {
+            "user_id": user.user_id,
+            "theme": "light",
+            "language": "es",
+            "show_badge": True,
+            "social_links": {}
+        }
+        await db.user_settings.insert_one({**settings})
+    return settings
+
+@api_router.put("/user/settings")
+async def update_user_settings(data: UserSettingsUpdate, user: User = Depends(get_current_user)):
+    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
+    if not update_data:
+        return {"message": "No changes"}
+    
+    existing = await db.user_settings.find_one({"user_id": user.user_id})
+    if existing:
+        await db.user_settings.update_one({"user_id": user.user_id}, {"$set": update_data})
+    else:
+        defaults = {"user_id": user.user_id, "theme": "light", "language": "es", "show_badge": True, "social_links": {}}
+        defaults.update(update_data)
+        await db.user_settings.insert_one({**defaults})
+    
+    settings = await db.user_settings.find_one({"user_id": user.user_id}, {"_id": 0})
+    return settings
+
 
 # User-created lessons
 @api_router.post("/lessons/create", response_model=Lesson)
@@ -618,6 +663,7 @@ async def create_user_lesson(data: CreateLessonRequest, user: User = Depends(get
         "content": content,
         "insights": data.insights,
         "quiz": [q.model_dump() for q in data.quiz_questions],
+        "resources": [r.model_dump() for r in (data.resources or [])],
         "image_url": data.image_url,
         "author_id": user.user_id,
         "duration": 5,
